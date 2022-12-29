@@ -1,27 +1,32 @@
 {
-  "name": "js",
-  "type": "module",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "lint:check": "eslint src/",
-    "lint:fix": "eslint src --fix",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "@babel/core": "^7.20.5",
-    "@babel/eslint-parser": "^7.19.1",
-    "@babel/node": "^7.20.5",
-    "@babel/preset-env": "^7.20.2",
-    "eslint": "^8.30.0",
-    "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-n": "^15.6.0",
-    "eslint-plugin-promise": "^6.1.1",
-    "nodemon": "^2.0.20"
-  }
+    "name": "js",
+    "type": "module",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "lint:check": "eslint src/",
+        "lint:fix": "eslint src --fix",
+        "start": "nodemon --exec babel-node -- src/index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "@babel/core": "^7.20.5",
+        "@babel/eslint-parser": "^7.19.1",
+        "@babel/node": "^7.20.5",
+        "@babel/preset-env": "^7.20.2",
+        "eslint": "^8.30.0",
+        "eslint-config-standard": "^17.0.0",
+        "eslint-plugin-import": "^2.26.0",
+        "eslint-plugin-n": "^15.6.0",
+        "eslint-plugin-promise": "^6.1.1",
+        "nodemon": "^2.0.20"
+    },
+    "dependencies": {
+        "express": "^4.18.2",
+        "uuid": "^9.0.0"
+    }
 }
