@@ -1,42 +1,13 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import Joi from 'joi';
-import _ from 'lodash';
+
+import { schema, validateSchema } from './validation.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const app = express();
 app.use(express.json());
 
 let users = [];
-
-const schema = Joi.object({
-    login: Joi.string().required(),
-    password: Joi.string().pattern(/\d/).pattern(/[a-zA-Z]/).required(),
-    age: Joi.number().min(4).max(130).required()
-});
-
-const errorResponse = (schemaErrors) => {
-    const errors = schemaErrors.map(error => _.pick(error, ['path', 'message']));
-    return {
-        status: 'failed',
-        errors
-    };
-};
-
-const validateSchema = (s) => {
-    return (req, res, next) => {
-        const { error } = s.validate(req.body, {
-            abortEarly: false,
-            allowUnknown: false
-        });
-
-        if (error?.isJoi) {
-            res.status(400).json(errorResponse(error.details));
-        } else {
-            return next();
-        }
-    };
-};
 
 const findUser = (id) => users
     .filter(user => !user.isDeleted)
@@ -111,7 +82,7 @@ router.route('/users/:id')
             res.status(404).json({ message: 'User not found' });
         }
     })
-    .post((req, res) => {
+    .post(validateSchema(schema), (req, res) => {
         const userData = req.body;
         updateUser(req.params.id, userData);
 
