@@ -1,5 +1,6 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import Joi from 'joi';
 import _ from 'lodash';
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -7,11 +8,35 @@ const app = express();
 app.use(express.json());
 
 let users = [];
-const PROPERTIES = [
-    'login',
-    'password',
-    'age'
-];
+
+const schema = Joi.object({
+    login: Joi.string().required(),
+    password: Joi.string().pattern(/\d/).pattern(/[a-zA-Z]/).required(),
+    age: Joi.number().min(4).max(130).required()
+});
+
+const errorResponse = (schemaErrors) => {
+    const errors = schemaErrors.map(error => _.pick(error, ['path', 'message']));
+    return {
+        status: 'failed',
+        errors
+    };
+};
+
+const validateSchema = (s) => {
+    return (req, res, next) => {
+        const { error } = s.validate(req.body, {
+            abortEarly: false,
+            allowUnknown: false
+        });
+
+        if (error?.isJoi) {
+            res.status(400).json(errorResponse(error.details));
+        } else {
+            return next();
+        }
+    };
+};
 
 const findUser = (id) => users
     .filter(user => !user.isDeleted)
@@ -20,7 +45,7 @@ const findUser = (id) => users
 const addUser = (user) => {
     const id = uuidv4();
     users.push({
-        ..._.pick(user, PROPERTIES),
+        ...user,
         id,
         isDeleted: false
     });
@@ -36,7 +61,7 @@ const updateUser = (id, data) => {
             ...users.filter(u => u.id !== id),
             {
                 ...user,
-                ..._.pick(data, PROPERTIES)
+                ...data
             }
         ];
     }
@@ -98,8 +123,9 @@ router.route('/users/:id')
         res.sendStatus(204);
     });
 
+
 router.route('/users')
-    .put((req, res) => {
+    .put(validateSchema(schema), (req, res) => {
         const user = req.body;
         const id = addUser(user);
 
