@@ -4,12 +4,17 @@ import { api as users } from './users.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const app = express();
+const router = express.Router();
+
 app.use(express.json());
 
 const createUserResponse = (userData) =>
     _.pick(userData, ['login', 'age', 'id']);
 
-const router = express.Router();
+const errorStatusMap = {
+    ValidationError: 400,
+    NotFoundError: 404
+};
 
 router.route('/users/suggest')
     .get((req, res) => {
@@ -17,6 +22,17 @@ router.route('/users/suggest')
         const suggestedUsers = users.suggest(login, limit).map(createUserResponse);
 
         res.json(suggestedUsers);
+    });
+
+router.route('/users')
+    .post((req, res) => {
+        const user = req.body;
+        try {
+            const newUser = users.add(user);
+            res.json(createUserResponse(newUser));
+        } catch (error) {
+            res.status(400).json({ message: error.message });
+        }
     });
 
 router.route('/users/:id')
@@ -35,23 +51,16 @@ router.route('/users/:id')
             const newUser = users.update(req.params.id, userData);
             res.json(createUserResponse(newUser));
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            const status = errorStatusMap[error.name];
+            res.status(status).json({ message: error.message });
         }
     })
     .delete((req, res) => {
-        users.remove(req.params.id);
-
-        res.sendStatus(204);
-    });
-
-router.route('/users')
-    .post((req, res) => {
-        const user = req.body;
         try {
-            const newUser = users.add(user);
-            res.json(createUserResponse(newUser));
+            users.remove(req.params.id);
+            res.sendStatus(204);
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            res.status(404).json({ message: error.message });
         }
     });
 

@@ -2,6 +2,15 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { validateUser } from './validation.js';
 
+class NotFoundError extends Error {
+    constructor(id, ...params) {
+        super(...params);
+        this.name = 'NotFoundError';
+        this.id = id;
+        this.message = `User ${id} not found`;
+    }
+}
+
 let users = [];
 
 const findUser = (id) =>
@@ -32,7 +41,7 @@ const updateUser = (id, data) => {
         return updatedUser;
     }
 
-    throw new Error(`User ${id} not found`);
+    throw new NotFoundError(id);
 };
 
 const removeUser = (id) => {
@@ -47,7 +56,7 @@ const removeUser = (id) => {
         return id;
     }
 
-    throw new Error(`User ${id} not found`);
+    throw new NotFoundError(id);
 };
 
 const getSuggestedUsers = (loginSubstring, limit = 10) => users

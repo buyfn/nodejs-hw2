@@ -13,7 +13,7 @@ export const validateUser = (userData) => {
     });
 
     if (error) {
-        throw new Error(error);
+        throw error;
     }
 
     return value;
