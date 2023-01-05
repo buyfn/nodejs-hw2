@@ -25,44 +25,48 @@ router.route('/users/suggest')
     });
 
 router.route('/users')
-    .post((req, res) => {
+    .post((req, res, next) => {
         const user = req.body;
         try {
             const newUser = users.add(user);
             res.json(createUserResponse(newUser));
         } catch (error) {
-            res.status(400).json({ message: error.message });
+            return next(error);
         }
     });
 
 router.route('/users/:id')
-    .get((req, res) => {
-        const user = users.find(req.params.id);
-
-        if (user) {
-            res.json(createUserResponse(user));
-        } else {
-            res.status(404).json({ message: 'User not found' });
+    .get((req, res, next) => {
+        try {
+            const user = users.find(req.params.id);
+            res.json(user);
+        } catch (error) {
+            return next(error);
         }
     })
-    .patch((req, res) => {
+    .patch((req, res, next) => {
         const userData = req.body;
         try {
             const newUser = users.update(req.params.id, userData);
             res.json(createUserResponse(newUser));
         } catch (error) {
-            const status = errorStatusMap[error.name];
-            res.status(status).json({ message: error.message });
+            return next(error);
         }
     })
-    .delete((req, res) => {
+    .delete((req, res, next) => {
         try {
             users.remove(req.params.id);
             res.sendStatus(204);
         } catch (error) {
-            res.status(404).json({ message: error.message });
+            return next(error);
         }
     });
+
+router.use((error, req, res, next) => {
+    const status = errorStatusMap[error.name];
+    res.status(status).json({ message: error.message });
+    next();
+});
 
 app.use('/', router);
 app.listen(PORT, () => {

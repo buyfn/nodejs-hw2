@@ -13,8 +13,15 @@ class NotFoundError extends Error {
 
 let users = [];
 
-const findUser = (id) =>
-    users.find(user => user.id === id && !user.isDeleted);
+const findUser = (id) => {
+    const result = users.find(user => user.id === id && !user.isDeleted);
+
+    if (!result) {
+        throw new NotFoundError(id);
+    }
+
+    return result;
+};
 
 const addUser = (user) => {
     const id = uuidv4();
