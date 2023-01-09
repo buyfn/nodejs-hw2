@@ -1,7 +1,8 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import _ from 'lodash';
 
-import { schema, validateSchema } from './validation.js';
+import { userSchema, validateUserBody } from './validation.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const app = express();
@@ -9,44 +10,51 @@ app.use(express.json());
 
 let users = [];
 
-const findUser = (id) => users
-    .filter(user => !user.isDeleted)
-    .find(user => user.id === id);
+const createUserResponse = (userData) =>
+    _.pick(userData, ['login', 'age', 'id']);
+
+const findUser = (id) =>
+    users.find(user => user.id === id && !user.isDeleted);
 
 const addUser = (user) => {
     const id = uuidv4();
-    users.push({
+    const newUser = {
         ...user,
         id,
         isDeleted: false
-    });
+    };
+    users.push(newUser);
 
-    return id;
+    return newUser;
 };
 
 const updateUser = (id, data) => {
     const user = findUser(id);
 
-    if (user) {
-        users = [
-            ...users.filter(u => u.id !== id),
-            {
-                ...user,
-                ...data
-            }
-        ];
+    if (!user) {
+        throw new Error('User not found');
     }
+
+    const updatedUser = { ...user, ...data };
+    users = [
+        ...users.filter(u => u.id !== id),
+        updatedUser
+    ];
+
+    return updatedUser;
 };
 
 const removeUser = (id) => {
     const userToRemove = findUser(id);
 
-    if (userToRemove) {
-        users = [
-            ...users.filter(user => user.id !== id),
-            { ...userToRemove, isDeleted: true }
-        ];
+    if (!userToRemove) {
+        throw new Error('User not found');
     }
+
+    users = [
+        ...users.filter(user => user.id !== id),
+        { ...userToRemove, isDeleted: true }
+    ];
 };
 
 const getSuggestedUsers = (loginSubstring, limit = 10) => users
@@ -67,7 +75,8 @@ const router = express.Router();
 
 router.get('/users/suggest', (req, res) => {
     const { login, limit } = req.query;
-    const suggestedUsers = getSuggestedUsers(login, limit);
+    const suggestedUsers = getSuggestedUsers(login, limit)
+        .map(createUserResponse);
 
     res.json(suggestedUsers);
 });
@@ -77,16 +86,16 @@ router.route('/users/:id')
         const user = findUser(req.params.id);
 
         if (user) {
-            res.json(user);
+            res.json(createUserResponse(user));
         } else {
             res.status(404).json({ message: 'User not found' });
         }
     })
-    .post(validateSchema(schema), (req, res) => {
+    .patch(validateUserBody(userSchema), (req, res) => {
         const userData = req.body;
-        updateUser(req.params.id, userData);
+        const updatedUser = updateUser(req.params.id, userData);
 
-        res.sendStatus(204);
+        res.json(createUserResponse(updatedUser));
     })
     .delete((req, res) => {
         removeUser(req.params.id);
@@ -96,13 +105,19 @@ router.route('/users/:id')
 
 
 router.route('/users')
-    .put(validateSchema(schema), (req, res) => {
+    .post(validateUserBody(userSchema), (req, res) => {
         const user = req.body;
-        const id = addUser(user);
+        const userData = addUser(user);
 
-        res.json({ id });
+        res.json(createUserResponse(userData));
     });
 
+router.use((error, req, res, next) => {
+    res.status(500).json({ message: 'Intrernal server error' });
+    next();
+});
+
 app.use('/', router);
-app.listen(PORT);
-process.stdout.write(`Server started on port ${PORT}\n`);
+app.listen(PORT, () => {
+    console.log(`Server started on port ${PORT}\n`);
+});
