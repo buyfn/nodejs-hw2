@@ -1,17 +1,13 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import _ from 'lodash';
+
+import { schema, validateSchema } from './validation.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const app = express();
 app.use(express.json());
 
 let users = [];
-const PROPERTIES = [
-    'login',
-    'password',
-    'age'
-];
 
 const findUser = (id) => users
     .filter(user => !user.isDeleted)
@@ -20,7 +16,7 @@ const findUser = (id) => users
 const addUser = (user) => {
     const id = uuidv4();
     users.push({
-        ..._.pick(user, PROPERTIES),
+        ...user,
         id,
         isDeleted: false
     });
@@ -36,7 +32,7 @@ const updateUser = (id, data) => {
             ...users.filter(u => u.id !== id),
             {
                 ...user,
-                ..._.pick(data, PROPERTIES)
+                ...data
             }
         ];
     }
@@ -86,7 +82,7 @@ router.route('/users/:id')
             res.status(404).json({ message: 'User not found' });
         }
     })
-    .post((req, res) => {
+    .post(validateSchema(schema), (req, res) => {
         const userData = req.body;
         updateUser(req.params.id, userData);
 
@@ -98,8 +94,9 @@ router.route('/users/:id')
         res.sendStatus(204);
     });
 
+
 router.route('/users')
-    .put((req, res) => {
+    .put(validateSchema(schema), (req, res) => {
         const user = req.body;
         const id = addUser(user);
 
