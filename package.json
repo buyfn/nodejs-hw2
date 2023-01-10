@@ -8,7 +8,10 @@
         "lint:check": "eslint src/",
         "lint:fix": "eslint src --fix",
         "start": "nodemon --exec babel-node -- src/index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+	"newman": "newman run postman_collection.json",
+	"pretest": "nodemon --exec babel-node -- src/index.js &",
+        "test": "npm run newman",
+	"posttest": "kill $(lsof -t -i:3000)"
     },
     "keywords": [],
     "author": "",
@@ -23,6 +26,7 @@
         "eslint-plugin-import": "^2.26.0",
         "eslint-plugin-n": "^15.6.0",
         "eslint-plugin-promise": "^6.1.1",
+        "newman": "^5.3.2",
         "nodemon": "^2.0.20"
     },
     "dependencies": {

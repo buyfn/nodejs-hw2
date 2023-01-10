@@ -2,7 +2,8 @@
 	"info": {
 		"_postman_id": "2aa8670e-df5b-4062-8964-a307cdced3c8",
 		"name": "User (nodejs hw2)",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "10596551"
 	},
 	"item": [
 		{
@@ -25,7 +26,7 @@
 				}
 			],
 			"request": {
-				"method": "PUT",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -73,10 +74,30 @@
 			"response": []
 		},
 		{
-			"name": "Delete user",
+			"name": "Update user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
-				"method": "DELETE",
+				"method": "PATCH",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"login\": \"whane\",\n    \"age\": 20,\n    \"password\": \"abc123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
 					"raw": "{{baseUrl}}/users/:userId",
 					"host": [
@@ -102,7 +123,7 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{baseUrl}}/users/suggest?login=c&limit=3",
+					"raw": "{{baseUrl}}/users/suggest?login=&limit=10",
 					"host": [
 						"{{baseUrl}}"
 					],
@@ -113,11 +134,11 @@
 					"query": [
 						{
 							"key": "login",
-							"value": "c"
+							"value": ""
 						},
 						{
 							"key": "limit",
-							"value": "3"
+							"value": "10"
 						}
 					]
 				}
@@ -125,30 +146,10 @@
 			"response": []
 		},
 		{
-			"name": "Update user",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							""
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
+			"name": "Delete user",
 			"request": {
-				"method": "POST",
+				"method": "DELETE",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n    \"login\": \"whane\",\n    \"age\": 20,\n    \"password\": \"abc123\"\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
 				"url": {
 					"raw": "{{baseUrl}}/users/:userId",
 					"host": [
