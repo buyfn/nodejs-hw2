@@ -7,7 +7,7 @@
 	},
 	"item": [
 		{
-			"name": "Put user",
+			"name": "Add user",
 			"event": [
 				{
 					"listen": "test",
