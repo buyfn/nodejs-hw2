@@ -8,10 +8,10 @@
         "lint:check": "eslint src/",
         "lint:fix": "eslint src --fix",
         "start": "nodemon --exec babel-node -- src/index.js",
-	"newman": "newman run postman_collection.json",
-	"pretest": "nodemon --exec babel-node -- src/index.js &",
+        "newman": "newman run postman_collection.json",
+        "pretest": "node src/index.js &",
         "test": "npm run newman",
-	"posttest": "kill $(lsof -t -i:3000)"
+        "posttest": "kill $(lsof -t -i:3000)"
     },
     "keywords": [],
     "author": "",
