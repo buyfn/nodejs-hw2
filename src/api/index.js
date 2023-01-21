@@ -1,15 +1,11 @@
 import express from 'express';
 
-import { getUsersService } from '../services/users.js';
-import {
-    knexUserRepository
-} from '../data-access/repositories/user/index.js';
-import { userSchema, validateUserBody } from '../validation.js';
+import { configureUsersService } from '../config.js';
 import { createUserResponse } from './createUserResponse.js';
+import { userSchema, validateUserBody } from './validation.js';
 
 const router = express.Router();
-
-const usersService = getUsersService(knexUserRepository);
+const usersService = configureUsersService();
 
 router.get('/users/suggest', async (req, res) => {
     const { login, limit } = req.query;

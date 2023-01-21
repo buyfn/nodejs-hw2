@@ -1,4 +1,7 @@
+import './config.js';
 import express from 'express';
+
+
 import { router } from './api/index.js';
 
 const PORT = Number(process.env.PORT) || 3000;
