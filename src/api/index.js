@@ -1,24 +1,26 @@
 import express from 'express';
-import _ from 'lodash';
 
-import { userService } from '../services/users-db/index.js';
+import { getUsersService } from '../services/users.js';
+import {
+    knexUserRepository
+} from '../data-access/repositories/user/index.js';
 import { userSchema, validateUserBody } from '../validation.js';
+import { createUserResponse } from './createUserResponse.js';
 
 const router = express.Router();
 
-const createUserResponse = (userData) =>
-    _.pick(userData, ['login', 'age', 'id']);
+const usersService = getUsersService(knexUserRepository);
 
 router.get('/users/suggest', async (req, res) => {
     const { login, limit } = req.query;
-    const suggestedUsers = await userService.getSuggested(login, limit);
+    const suggestedUsers = await usersService.getSuggested(login, limit);
 
     res.json(suggestedUsers.map(createUserResponse));
 });
 
 router.route('/users/:id')
     .get(async (req, res) => {
-        const user = await userService.find(req.params.id);
+        const user = await usersService.find(req.params.id);
 
         if (user) {
             res.json(createUserResponse(user));
@@ -29,7 +31,7 @@ router.route('/users/:id')
     .patch(validateUserBody(userSchema), async (req, res, next) => {
         const userData = req.body;
         try {
-            const updatedUser = await userService.update(req.params.id, userData);
+            const updatedUser = await usersService.update(req.params.id, userData);
 
             if (updatedUser) {
                 res.json(createUserResponse(updatedUser));
@@ -42,7 +44,7 @@ router.route('/users/:id')
     })
     .delete(async (req, res, next) => {
         try {
-            await userService.remove(req.params.id);
+            await usersService.remove(req.params.id);
             res.sendStatus(204);
         } catch (error) {
             return next(error);
@@ -55,7 +57,7 @@ router.route('/users')
         const user = req.body;
 
         try {
-            const userData = await userService.add(user);
+            const userData = await usersService.add(user);
             res.json(createUserResponse(userData));
         } catch (error) {
             return next(error);

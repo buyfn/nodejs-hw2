@@ -1,7 +1,7 @@
-import { db } from '../db.js';
+import { db } from '../../db.js';
 
-export const User = {
-    async getSuggested(loginSubstring, limit = 10) {
+export const userRepository = {
+    async getSuggested(loginSubstring, limit) {
         const users = await db('users')
             .where('isDeleted', false)
             .whereLike('login', `%${loginSubstring}%`)

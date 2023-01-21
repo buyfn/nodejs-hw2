@@ -44,21 +44,23 @@ const remove = (id) => {
     }
 };
 
-const getSuggested = (loginSubstring, limit = 10) => users
-    .filter(user => !user.isDeleted)
-    .filter(user => user.login.includes(loginSubstring))
-    .sort((userA, userB) => {
-        if (userA.login < userB.login) {
-            return -1;
-        }
-        if (userA.login > userB.login) {
-            return 1;
-        }
-        return 0;
-    })
-    .slice(0, limit);
+const getSuggested = (loginSubstring, limit) => {
+    return users
+        .filter(user => !user.isDeleted)
+        .filter(user => user.login.includes(loginSubstring))
+        .sort((userA, userB) => {
+            if (userA.login < userB.login) {
+                return -1;
+            }
+            if (userA.login > userB.login) {
+                return 1;
+            }
+            return 0;
+        })
+        .slice(0, limit);
+};
 
-export const userService = {
+export const userRepository = {
     getSuggested,
     find,
     add,
