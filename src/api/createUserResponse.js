@@ -1,4 +1,4 @@
-import _ from 'lodash';
-
-export const createUserResponse = (userData) =>
-    _.pick(userData, ['login', 'age', 'id']);
+export const createUserResponse = (userData) => {
+    const { login, age, id } = userData;
+    return { login, age, id };
+};

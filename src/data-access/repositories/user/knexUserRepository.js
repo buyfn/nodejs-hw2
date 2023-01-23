@@ -20,7 +20,7 @@ export const userRepository = {
     async add(userData) {
         const [user] = await db('users')
             .insert(userData)
-            .returning(['id', 'login', 'age']);
+            .returning('*');
         return user;
     },
     async update(id, userData) {
@@ -30,7 +30,7 @@ export const userRepository = {
                 'isDeleted': false
             })
             .update(userData)
-            .returning(['id', 'login', 'age']);
+            .returning('*');
 
         return user;
     },

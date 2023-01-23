@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { nanoid } from 'nanoid';
 
 let users = [];
 
@@ -6,7 +6,7 @@ const find = (id) =>
     users.find(user => user.id === id && !user.isDeleted);
 
 const add = (user) => {
-    const id = uuidv4();
+    const id = nanoid();
     const newUser = {
         ...user,
         id,
