@@ -1,20 +1,12 @@
-import { nanoid } from 'nanoid';
-
 let users = [];
 
 const find = (id) =>
     users.find(user => user.id === id && !user.isDeleted);
 
 const add = (user) => {
-    const id = nanoid();
-    const newUser = {
-        ...user,
-        id,
-        isDeleted: false
-    };
-    users.push(newUser);
+    users.push(user);
 
-    return newUser;
+    return user;
 };
 
 const update = (id, data) => {

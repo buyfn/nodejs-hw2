@@ -1,10 +1,16 @@
+import { nanoid } from 'nanoid';
+
 export const getUsersService = repository => ({
     async find(id) {
         const user = await repository.find(id);
         return user;
     },
     async add(userData) {
-        const user = await repository.add(userData);
+        const user = await repository.add({
+            ...userData,
+            id: nanoid(),
+            isDeleted: false
+        });
         return user;
     },
     async update(id, userData) {
