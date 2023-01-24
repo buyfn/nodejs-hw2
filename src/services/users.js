@@ -1,4 +1,4 @@
-import { nanoid } from 'nanoid';
+import { randomUUID } from 'node:crypto';
 
 export const getUsersService = repository => ({
     async find(id) {
@@ -8,7 +8,7 @@ export const getUsersService = repository => ({
     async add(userData) {
         const user = await repository.add({
             ...userData,
-            id: nanoid(),
+            id: randomUUID(),
             isDeleted: false
         });
         return user;
