@@ -19,6 +19,7 @@ export function up(knex) {
         .createTable('usergroup', (table) => {
             table.uuid('userid').references('users.id').onDelete('CASCADE');
             table.uuid('groupid').references('groups.id').onDelete('CASCADE');
+            table.primary(['userid', 'groupid']);
         });
 }
 

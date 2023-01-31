@@ -45,5 +45,9 @@ export const getUsersService = repository => ({
     async getAllGroups() {
         const groups = await repository.getAllGroups();
         return groups;
+    },
+    async addUsersToGroup(groupId, userIds) {
+        const addedUserIds = await repository.addUsersToGroup(groupId, userIds);
+        return addedUserIds;
     }
 });

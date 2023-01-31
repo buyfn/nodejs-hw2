@@ -51,6 +51,17 @@ groupsRouter.route('/:id')
         } catch (error) {
             return next(error);
         }
+    })
+    .post(async (req, res, next) => {
+        const users = req.body;
+        const groupId = req.params.id;
+        try {
+            const addedUsers = await usersService
+                .addUsersToGroup(groupId, users);
+            res.json({ addedUsers });
+        } catch (error) {
+            return next(error);
+        }
     });
 
 export { groupsRouter };
