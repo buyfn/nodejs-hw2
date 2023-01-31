@@ -7,6 +7,13 @@ export const userSchema = Joi.object({
     age: Joi.number().min(4).max(130).required()
 });
 
+export const groupSchema = Joi.object({
+    name: Joi.string().required(),
+    permissions: Joi.array().items(Joi.string().valid(
+        'READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'
+    ))
+});
+
 const errorResponse = (schemaErrors) => {
     const errors = schemaErrors.map(error => _.pick(error, ['path', 'message']));
     return {
@@ -15,7 +22,7 @@ const errorResponse = (schemaErrors) => {
     };
 };
 
-export const validateUserBody = (schema) => {
+export const validateBody = (schema) => {
     return (req, res, next) => {
         const { error } = schema.validate(req.body, {
             abortEarly: false,

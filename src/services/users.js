@@ -23,5 +23,27 @@ export const getUsersService = repository => ({
     async getSuggested(loginSubstring = '', limit = 10) {
         const users = await repository.getSuggested(loginSubstring, limit);
         return users;
+    },
+    async addGroup(groupData) {
+        const group = await repository.addGroup({
+            ...groupData,
+            id: randomUUID()
+        });
+        return group;
+    },
+    async updateGroup(id, groupData) {
+        const group = await repository.updateGroup(id, groupData);
+        return group;
+    },
+    async deleteGroup(id) {
+        await repository.deleteGroup(id);
+    },
+    async getGroup(id) {
+        const group = await repository.getGroup(id);
+        return group;
+    },
+    async getAllGroups() {
+        const groups = await repository.getAllGroups();
+        return groups;
     }
 });

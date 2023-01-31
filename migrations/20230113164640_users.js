@@ -4,12 +4,17 @@
  */
 export function up(knex) {
     return knex.schema.createTable('users', (table) => {
-        table.string('id').primary();
+        table.uuid('id').primary();
         table.string('login').notNullable();
         table.string('password').notNullable();
         table.integer('age').notNullable();
         table.boolean('isDeleted').defaultTo(false);
-    });
+    })
+        .createTable('groups', (table) => {
+            table.uuid('id').primary();
+            table.string('name').notNullable();
+            table.specificType('permissions', 'text ARRAY').notNullable();
+        });
 }
 
 /**
@@ -17,5 +22,6 @@ export function up(knex) {
  * @returns { Promise<void> }
  */
 export function down(knex) {
-    return knex.schema.dropTable('users');
+    return knex.schema.dropTable('users')
+        .dropTable('groups');
 }
