@@ -94,6 +94,39 @@
 					"response": []
 				},
 				{
+					"name": "Add users to group",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"c90e5384-066a-42d1-9b91-3ff36f01663d\", \"bc80d630-5a6e-4685-a0f2-4120a77f4c6b\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/groups/:groupId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"groups",
+								":groupId"
+							],
+							"variable": [
+								{
+									"key": "groupId",
+									"value": "{{groupId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Update group",
 					"request": {
 						"method": "PATCH",
