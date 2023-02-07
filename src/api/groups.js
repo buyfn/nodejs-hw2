@@ -8,33 +8,39 @@ const usersService = configureUsersService();
 
 groupsRouter.route('/')
     .post(validateBody(groupSchema), async (req, res, next) => {
-        const group = req.body;
-
         try {
+            const group = req.body;
             const groupData = await usersService.addGroup(group);
             res.json(groupData);
         } catch (error) {
             return next(error);
         }
     })
-    .get(async (req, res) => {
-        const groups = await usersService.getAllGroups();
-        res.json(groups);
+    .get(async (req, res, next) => {
+        try {
+            const groups = await usersService.getAllGroups();
+            res.json(groups);
+        } catch (error) {
+            return next(error);
+        }
     });
 
 groupsRouter.route('/:id')
-    .get(async (req, res) => {
-        const group = await usersService.getGroup(req.params.id);
-
-        if (group) {
-            res.json(group);
-        } else {
-            res.status(404).json({ message: 'Group not found' });
+    .get(async (req, res, next) => {
+        try {
+            const group = await usersService.getGroup(req.params.id);
+            if (group) {
+                res.json(group);
+            } else {
+                res.status(404).json({ message: 'Group not found' });
+            }
+        } catch (error) {
+            return next(error);
         }
     })
     .patch(validateBody(groupSchema), async (req, res, next) => {
-        const groupData = req.body;
         try {
+            const groupData = req.body;
             const updatedGroup = await usersService.updateGroup(
                 req.params.id,
                 groupData
@@ -53,9 +59,9 @@ groupsRouter.route('/:id')
         }
     })
     .post(async (req, res, next) => {
-        const users = req.body;
-        const groupId = req.params.id;
         try {
+            const users = req.body;
+            const groupId = req.params.id;
             const addedUsers = await usersService
                 .addUsersToGroup(groupId, users);
             res.json({ addedUsers });

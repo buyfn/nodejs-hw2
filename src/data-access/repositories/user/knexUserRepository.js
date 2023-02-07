@@ -76,16 +76,9 @@ export const userRepository = {
     },
 
     async addUsersToGroup(groupid, userIds) {
-        const addedUsers = await db.transaction(trx => {
-            Promise.all(userIds.map(userid =>
-                db('usergroup')
-                    .insert({ groupid, userid })
-                    .transacting(trx)
-                    .returning('userid')
-                    .then(([inserted]) => inserted.userid)))
-                .then(trx.commit)
-                .catch(trx.rollback);
-        });
+        const addedUsers = await db('usergroup')
+            .insert(userIds.map(userid => ({ groupid, userid })))
+            .returning('userid');
         return addedUsers;
     }
 };
