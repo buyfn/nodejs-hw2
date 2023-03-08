@@ -1,12 +1,13 @@
 import 'dotenv/config.js';
 
 import { getUsersService } from './services/users.js';
+import { getGroupsService } from './services/groups.js';
 import {
     knexUserRepository,
     inMemoryUserRepository
 } from './data-access/repositories/user/index.js';
 
-export const configureUsersService = () => {
+export const configureServices = () => {
     const getRepository = (storage) => {
         switch (storage) {
             case 'db':
@@ -18,6 +19,10 @@ export const configureUsersService = () => {
     };
 
     const storage = process.env.STORAGE || 'memory';
+    const repository = getRepository(storage);
 
-    return getUsersService(getRepository(storage));
+    return {
+        usersService: getUsersService(repository),
+        groupsService: getGroupsService(repository)
+    };
 };

@@ -13,7 +13,7 @@ app.use((req, res, next) => {
         path: req.path,
         method: req.method,
         body: req.body,
-        'query params': req.query
+        query: req.query
     });
     next();
 });

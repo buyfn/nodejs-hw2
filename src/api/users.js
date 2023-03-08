@@ -1,12 +1,12 @@
 import express from 'express';
 
-import { configureUsersService } from '../config.js';
+import { configureServices } from '../config.js';
 import { logger } from '../logger.js';
 import { createUserResponse } from './createUserResponse.js';
 import { userSchema, validateBody } from './validation.js';
 
 const router = express.Router();
-const usersService = configureUsersService();
+const { usersService } = configureServices();
 
 router.get('/suggest', async (req, res, next) => {
     const { login, limit } = req.query;

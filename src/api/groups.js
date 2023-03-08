@@ -1,17 +1,17 @@
 import express from 'express';
 
 import { logger } from '../logger.js';
-import { configureUsersService } from '../config.js';
+import { configureServices } from '../config.js';
 import { groupSchema, validateBody } from './validation.js';
 
 const groupsRouter = express.Router();
-const usersService = configureUsersService();
+const { groupsService } = configureServices();
 
 groupsRouter.route('/')
     .post(validateBody(groupSchema), async (req, res, next) => {
         const group = req.body;
         try {
-            const groupData = await usersService.addGroup(group);
+            const groupData = await groupsService.addGroup(group);
             res.json(groupData);
         } catch (error) {
             logger.error({
@@ -24,7 +24,7 @@ groupsRouter.route('/')
     })
     .get(async (req, res, next) => {
         try {
-            const groups = await usersService.getAllGroups();
+            const groups = await groupsService.getAllGroups();
             res.json(groups);
         } catch (error) {
             logger.error({
@@ -40,7 +40,7 @@ groupsRouter.route('/:id')
     .get(async (req, res, next) => {
         const groupId = req.params.id;
         try {
-            const group = await usersService.getGroup(req.params.id);
+            const group = await groupsService.getGroup(req.params.id);
             if (group) {
                 res.json(group);
             } else {
@@ -59,7 +59,7 @@ groupsRouter.route('/:id')
         const groupData = req.body;
         const groupId = req.params.id;
         try {
-            const updatedGroup = await usersService.updateGroup(
+            const updatedGroup = await groupsService.updateGroup(
                 groupId,
                 groupData
             );
@@ -76,7 +76,7 @@ groupsRouter.route('/:id')
     .delete(async (req, res, next) => {
         const groupId = req.params.id;
         try {
-            await usersService.deleteGroup(groupId);
+            await groupsService.deleteGroup(groupId);
             res.sendStatus(204);
         } catch (error) {
             logger.error({
@@ -91,7 +91,7 @@ groupsRouter.route('/:id')
         const users = req.body;
         const groupId = req.params.id;
         try {
-            const addedUsers = await usersService
+            const addedUsers = await groupsService
                 .addUsersToGroup(groupId, users);
             res.json({ addedUsers });
         } catch (error) {
