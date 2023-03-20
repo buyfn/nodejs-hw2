@@ -24,5 +24,9 @@ export const getUsersService = repository => ({
         const users = await repository
             .getSuggested(loginSubstring, limit);
         return users;
+    },
+    async getByLogin(login) {
+        const user = await repository.getByLogin(login);
+        return user;
     }
 });

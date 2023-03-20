@@ -2,6 +2,8 @@ import express from 'express';
 
 import { usersRouter, groupsRouter } from './api/index.js';
 import { logger } from './logger.js';
+import { configureServices } from './config.js';
+import { handleLogin } from './api/auth.js';
 
 const PORT = Number(process.env.PORT) || 3000;
 const app = express();
@@ -20,6 +22,8 @@ app.use((req, res, next) => {
 
 app.use('/users', usersRouter);
 app.use('/groups', groupsRouter);
+
+app.post('/login', handleLogin);
 
 app.use((error, req, res, next) => {
     logger.error({
