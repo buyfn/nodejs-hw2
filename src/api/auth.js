@@ -20,7 +20,7 @@ export const checkToken = (req, res, next) => {
         logger.warn({
             message: error.message
         });
-        res.status(401).send({ message: error.message });
+        res.status(403).send({ message: error.message });
     }
 
     return next();
