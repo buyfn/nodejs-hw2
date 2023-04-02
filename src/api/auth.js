@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
+
 import { logger } from '../logger.js';
 
 import { configureServices } from '../config.js';
@@ -36,7 +38,17 @@ export const handleLogin = async (req, res) => {
     }
 
     const user = await usersService.getByLogin(login);
-    if (user.password !== password) {
+    if (!user) {
+        return res.status(401).send({
+            message: 'Bad username/password combination'
+        });
+    }
+
+    const passwordMatches = await bcrypt.compare(
+        password,
+        user.password
+    );
+    if (!passwordMatches) {
         return res.status(401).send({
             message: 'Bad username/password combination'
         });

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+import bcrypt from 'bcrypt';
 
 export const getUsersService = repository => ({
     async find(id) {
@@ -6,8 +7,14 @@ export const getUsersService = repository => ({
         return user;
     },
     async add(userData) {
+        const { password } = userData;
+        const hash = await bcrypt.hash(
+            password,
+            Number(process.env.SALT_ROUNDS)
+        );
         const user = await repository.add({
             ...userData,
+            password: hash,
             id: randomUUID(),
             isDeleted: false
         });
