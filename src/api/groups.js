@@ -3,9 +3,12 @@ import express from 'express';
 import { logger } from '../logger.js';
 import { configureServices } from '../config.js';
 import { groupSchema, validateBody } from './validation.js';
+import { checkToken } from './auth.js';
 
 const groupsRouter = express.Router();
 const { groupsService } = configureServices();
+
+groupsRouter.use(checkToken);
 
 groupsRouter.route('/')
     .post(validateBody(groupSchema), async (req, res, next) => {

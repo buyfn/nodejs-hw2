@@ -4,9 +4,12 @@ import { configureServices } from '../config.js';
 import { logger } from '../logger.js';
 import { createUserResponse } from './createUserResponse.js';
 import { userSchema, validateBody } from './validation.js';
+import { checkToken } from './auth.js';
 
 const router = express.Router();
 const { usersService } = configureServices();
+
+router.use(checkToken);
 
 router.get('/suggest', async (req, res, next) => {
     const { login, limit } = req.query;

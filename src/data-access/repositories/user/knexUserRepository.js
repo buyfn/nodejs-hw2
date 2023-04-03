@@ -43,6 +43,15 @@ export const userRepository = {
             .update({ isDeleted: true });
     },
 
+    async getByLogin(login) {
+        const [user] = await db('users')
+            .where({
+                login,
+                'isDeleted': false
+            });
+        return user;
+    },
+
     async getAllGroups() {
         const groups = await db('groups');
         return groups;
