@@ -33,25 +33,40 @@ jest.mock('../config.js', () => ({
 
 describe('Users route', () => {
     test('add', (done) => {
+        const expectedResponse = {
+            login: testUserData.login,
+            age: testUserData.age
+        };
         request(app)
             .post('/users')
             .send(testUserData)
             .expect('Content-Type', /json/)
+            .expect(expectedResponse)
             .expect(200, done);
     });
 
     test('get', (done) => {
+        const expectedResponse = {
+            login: testUserData.login,
+            age: testUserData.age
+        };
         request(app)
             .get('/users/1')
             .expect('Content-Type', /json/)
+            .expect(expectedResponse)
             .expect(200, done);
     });
 
     test('update', (done) => {
+        const expectedResponse = {
+            login: testUserData.login,
+            age: testUserData.age
+        };
         request(app)
             .patch('/users/1')
             .send(testUserData)
             .expect('Content-Type', /json/)
+            .expect(expectedResponse)
             .expect(200, done);
     });
 
@@ -62,9 +77,14 @@ describe('Users route', () => {
     });
 
     test('suggest', (done) => {
+        const expectedResponse = [{
+            login: testUserData.login,
+            age: testUserData.age
+        }];
         request(app)
             .get('/users/suggest?login=a&limit=10')
             .expect('Content-Type', /json/)
+            .expect(expectedResponse)
             .expect(200, done);
     });
 });

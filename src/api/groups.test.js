@@ -26,7 +26,7 @@ jest.mock('../config.js', () => ({
             getGroup: jest.fn().mockImplementation(() => testGroupData),
             updateGroup: jest.fn().mockImplementation(() => testGroupData),
             deleteGroup: jest.fn(),
-            addUsersToGroup: jest.fn().mockImplementation(() => [])
+            addUsersToGroup: jest.fn().mockImplementation(() => ['user id'])
         }
     }))
 }));
@@ -37,6 +37,7 @@ describe('Groups route', () => {
             .post('/groups')
             .send(testGroupData)
             .expect('Content-Type', /json/)
+            .expect(testGroupData)
             .expect(200, done);
     });
 
@@ -44,6 +45,7 @@ describe('Groups route', () => {
         request(app)
             .get('/groups')
             .expect('Content-Type', /json/)
+            .expect([testGroupData])
             .expect(200, done);
     });
 
@@ -51,6 +53,7 @@ describe('Groups route', () => {
         request(app)
             .get('/groups/1')
             .expect('Content-Type', /json/)
+            .expect(testGroupData)
             .expect(200, done);
     });
 
@@ -59,6 +62,7 @@ describe('Groups route', () => {
             .patch('/groups/1')
             .send(testGroupData)
             .expect('Content-Type', /json/)
+            .expect(testGroupData)
             .expect(200, done);
     });
 
@@ -73,6 +77,7 @@ describe('Groups route', () => {
             .post('/groups/1')
             .send(['user id'])
             .expect('Content-Type', /json/)
+            .expect({ addedUsers: ['user id'] })
             .expect(200, done);
     });
 });
